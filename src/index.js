@@ -73,7 +73,7 @@ class App extends Component {
 
     const bIndex = this.state.buttonFocusIndex;
     const charLength = this.state.characters.length;
-    if (e.which === KEYBOARD_KEYS.leftArrow && buttonIndex > 0) {
+    if (e.which === KEYBOARD_KEYS.leftArrow && bIndex > 0) {
       this.setState({ buttonFocusIndex: bIndex - 1 });
     }
     if (e.which === KEYBOARD_KEYS.rightArrow && bIndex < charLength - 1) {
