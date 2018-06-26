@@ -2,3 +2,12 @@
   font-family: sans-serif;
   text-align: center;
 }
+
+.focused {
+  background: #e6f1f3;
+  border: 1px solid #b9d6f0;
+}
+
+button:focus {
+  outline: none;
+}
