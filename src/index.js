@@ -68,7 +68,10 @@ class App extends Component {
 
   conditionallyHidePicker(e) {
     if (KEYBOARD_KEYS.ALL_NUMBER_KEYS.includes(e.which)) {
-      this.handleNumberKeys(e);
+      return this.handleNumberKeys(e);
+    }
+    if (e.which === KEYBOARD_KEYS.enter) {
+      return this.handleEnter(e);
     }
     if (!this.state.showPicker) return;
     if (e.which === KEYBOARD_KEYS.esc) this.setState({ showPicker: false });
@@ -111,6 +114,12 @@ class App extends Component {
     this.setState({ showPicker: false });
   }
 
+  handleEnter(e) {
+    e.preventDefault();
+    const currentCharacter = this.state.characters[this.state.buttonFocusIndex];
+    this.insertCharacter(currentCharacter);
+  }
+
   handleNumberKeys(e) {
     e.preventDefault();
     const buttonIndex = KEYBOARD_KEYS.ALL_NUMBER_KEYS.indexOf(e.which);
@@ -118,7 +127,6 @@ class App extends Component {
   }
 
   showPicker(e) {
-    
     if (e.which === KEYBOARD_KEYS.rightArrow) {
       this.setState({ buttonFocusIndex: this.state.buttonFocusIndex + 1 });
       return;
