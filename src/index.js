@@ -20,15 +20,12 @@ class App extends Component {
       : 0;
   }
 
+  static getLetterCase(letter) {
+    return letter.toLowerCase() === letter ? "lower" : "upper";
+  }
+
   static getMapping() {
-    // TODO toUpperCase()
     return {
-      A: ["À", "Â", "Æ"],
-      C: ["Ç"],
-      E: ["É", "È", "Ë", "Ê"],
-      I: ["Î", "Ï"],
-      O: ["Ô", "Œ"],
-      U: ["Ù", "Û", "Ü"],
       a: ["à", "â", "æ"],
       c: ["ç"],
       e: ["é", "è", "ë", "ê"],
@@ -138,10 +135,19 @@ class App extends Component {
           const typedChar = target.value.split("")[
             App.getCursorIndex(target) - 1
           ];
-          if (App.getMapping()[typedChar]) {
+          const charCase = App.getLetterCase(typedChar);
+          const caseFunction =
+            charCase === "lower" ? "toLowerCase" : "toUpperCase";
+          const typedCharAsLower = typedChar.toLowerCase();
+          console.log(App.getMapping()[typedCharAsLower]);
+          console.log(typedCharAsLower);
+          if (App.getMapping()[typedCharAsLower]) {
+            const characters = App.getMapping()[typedCharAsLower].map(letter =>
+              String.prototype[caseFunction].call(letter)
+            );
             this.setState({
               showPicker: true,
-              characters: App.getMapping()[typedChar],
+              characters,
               buttonFocusIndex: 0
             });
           } else {
