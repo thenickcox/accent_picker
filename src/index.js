@@ -43,7 +43,7 @@ class App extends Component {
     this.showPicker = this.showPicker.bind(this);
     this.ensureCharsEntered = this.ensureCharsEntered.bind(this);
     this.insertCharacter = this.insertCharacter.bind(this);
-    this.conditionallyHidePicker = this.conditionallyHidePicker.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleNumberKeys = this.handleNumberKeys.bind(this);
     this.reset = this.reset.bind(this);
     this.timer = null;
@@ -57,35 +57,30 @@ class App extends Component {
   }
 
   componentDidMount() {
-    document.addEventListener("keydown", this.conditionallyHidePicker);
+    document.addEventListener("keydown", this.handleKeyDown);
     document.addEventListener("keyup", this.reset);
   }
 
   componentWillUnmount() {
-    document.removeEventListener("keydown", this.conditionallyHidePicker);
+    document.removeEventListener("keydown", this.handleKeyDown);
     document.removeEventListener("keyup", this.reset);
   }
 
-  conditionallyHidePicker(e) {
+  handleKeyDown(e) {
+    if (!this.state.showPicker) return;
     if (KEYBOARD_KEYS.ALL_NUMBER_KEYS.includes(e.which)) {
       return this.handleNumberKeys(e);
     }
-    if (e.which === KEYBOARD_KEYS.enter) {
-      return this.handleEnter(e);
-    }
-    if (!this.state.showPicker) return;
+    if (e.which === KEYBOARD_KEYS.enter) return this.handleEnter(e);
     if (e.which === KEYBOARD_KEYS.esc) this.setState({ showPicker: false });
-    if (
-      e.which === KEYBOARD_KEYS.leftArrow &&
-      this.state.buttonFocusIndex > 0
-    ) {
-      this.setState({ buttonFocusIndex: this.state.buttonFocusIndex - 1 });
+
+    const bIndex = this.state.buttonFocusIndex;
+    const charLength = this.state.characters.length;
+    if (e.which === KEYBOARD_KEYS.leftArrow && buttonIndex > 0) {
+      this.setState({ buttonFocusIndex: bIndex - 1 });
     }
-    if (
-      e.which === KEYBOARD_KEYS.rightArrow &&
-      this.state.buttonFocusIndex < this.state.characters.length - 1
-    ) {
-      this.setState({ buttonFocusIndex: this.state.buttonFocusIndex + 1 });
+    if (e.which === KEYBOARD_KEYS.rightArrow && bIndex < charLength - 1) {
+      this.setState({ buttonFocusIndex: bIndex + 1 });
     }
   }
 
@@ -143,7 +138,6 @@ class App extends Component {
           const typedChar = target.value.split("")[
             App.getCursorIndex(target) - 1
           ];
-          console.log(typedChar);
           if (App.getMapping()[typedChar]) {
             this.setState({
               showPicker: true,
