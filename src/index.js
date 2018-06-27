@@ -12,7 +12,7 @@ const KEYBOARD_KEYS = {
   ALL_NUMBER_KEYS: [49, 50, 51, 52, 53, 54, 55, 56, 57]
 };
 
-class InputWithAccentMap extends Component {
+class AccentTextbox extends Component {
   static getCursorIndex(input) {
     return input.selectionStart || input.selectionStart === "0"
       ? input.selectionStart
@@ -68,7 +68,7 @@ class InputWithAccentMap extends Component {
 
   // Is the user just trying to type a different character?
   isOtherKey(typed) {
-    return !Object.keys(InputWithAccentMap.getMapping()).includes(
+    return !Object.keys(AccentTextbox.getMapping()).includes(
       typed.toLowerCase()
     );
   }
@@ -119,7 +119,7 @@ class InputWithAccentMap extends Component {
 
   insertCharacter(char, opts) {
     const input = this.myInput.current;
-    const cursorPosition = InputWithAccentMap.getCursorIndex(input);
+    const cursorPosition = AccentTextbox.getCursorIndex(input);
     let text = input.value.split("");
     // Default to inserting behind the cursor
     if (!opts) text[cursorPosition - 1] = char;
@@ -156,16 +156,16 @@ class InputWithAccentMap extends Component {
       if (!this.timer) {
         this.timer = setTimeout(() => {
           const typedChar = target.value.split("")[
-            InputWithAccentMap.getCursorIndex(target) - 1
+            AccentTextbox.getCursorIndex(target) - 1
           ];
-          const charCase = InputWithAccentMap.getLetterCase(typedChar);
+          const charCase = AccentTextbox.getLetterCase(typedChar);
           const caseFunction =
             charCase === "lower" ? "toLowerCase" : "toUpperCase";
           const typedCharAsLower = typedChar.toLowerCase();
-          if (InputWithAccentMap.getMapping()[typedCharAsLower]) {
-            const characters = InputWithAccentMap.getMapping()[
-              typedCharAsLower
-            ].map(letter => String.prototype[caseFunction].call(letter));
+          if (AccentTextbox.getMapping()[typedCharAsLower]) {
+            const characters = AccentTextbox.getMapping()[typedCharAsLower].map(
+              letter => String.prototype[caseFunction].call(letter)
+            );
             this.setState({
               showPicker: true,
               characters,
@@ -231,4 +231,4 @@ class InputWithAccentMap extends Component {
 }
 
 const rootElement = document.getElementById("root");
-ReactDOM.render(<InputWithAccentMap />, rootElement);
+ReactDOM.render(<AccentTextbox />, rootElement);
