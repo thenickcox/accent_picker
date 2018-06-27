@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import ReactDOM from "react-dom";
 import Popover, { ArrowContainer } from "react-tiny-popover";
 
@@ -174,25 +174,29 @@ class App extends Component {
             boxShadow: "2px 2px 4px rgba(0,0,0,0.3)",
             border: "1px solid #e6f1f3",
             padding: "10px",
-            background: "#fff"
+            background: "#fff",
+            overflow: "visible"
           }}
           content={({ position, targetRect, popoverRect }) => (
-            <ul className="buttons">
-              {this.state.characters.map((char, index) => (
-                <li key={char}>
-                  <button
-                    className={
-                      this.state.buttonFocusIndex === index ? "focused" : ""
-                    }
-                    autoFocus={index === 0}
-                    onClick={() => this.insertCharacter(char)}
-                  >
-                    <span>{char}</span>
-                    <span>{index + 1}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
+            <Fragment>
+              <ul className="buttons">
+                {this.state.characters.map((char, index) => (
+                  <li key={char}>
+                    <button
+                      className={
+                        this.state.buttonFocusIndex === index ? "focused" : ""
+                      }
+                      autoFocus={index === 0}
+                      onClick={() => this.insertCharacter(char)}
+                    >
+                      <span>{char}</span>
+                      <span>{index + 1}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <div className="popoverArrow" />
+            </Fragment>
           )}
         >
           <input

@@ -45,3 +45,27 @@ ul.buttons li span:last-child {
 input {
   margin-top: 100px;
 }
+
+.popoverArrow {
+  width: 40px;
+  height: 20px;
+  overflow: hidden;
+  position: absolute;
+  left: 37%;
+  bottom: -20px;
+}
+
+.popoverArrow:after {
+  content: " ";
+  display: block;
+  border: 1px solid black;
+  height: 20px;
+  width: 20px;
+  transform: rotate(45deg);
+  position: absolute;
+  top: -11px;
+  left: 11px;
+  box-shadow: rgba(0, 0, 0, 0.3) 2px 2px 4px;
+  border: 1px solid rgb(230, 241, 243);
+  background: #fff;
+}
