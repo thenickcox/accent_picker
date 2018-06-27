@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import ReactDOM from "react-dom";
-import Popover, { ArrowContainer } from "react-tiny-popover";
+import Popover from "react-tiny-popover";
 
 import "./styles.css";
 
@@ -14,7 +14,6 @@ const KEYBOARD_KEYS = {
 
 class App extends Component {
   static getCursorIndex(input) {
-    // TODO cleanup
     return input.selectionStart || input.selectionStart === "0"
       ? input.selectionStart
       : 0;
@@ -42,6 +41,8 @@ class App extends Component {
     this.insertCharacter = this.insertCharacter.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleNumberKeys = this.handleNumberKeys.bind(this);
+    this.isOtherKey = this.isOtherKey.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
     this.reset = this.reset.bind(this);
     this.timer = null;
     this.myInput = React.createRef();
@@ -55,12 +56,30 @@ class App extends Component {
 
   componentDidMount() {
     document.addEventListener("keydown", this.handleKeyDown);
+    document.addEventListener("keypress", this.handleKeyPress);
     document.addEventListener("keyup", this.reset);
   }
 
   componentWillUnmount() {
-    document.removeEventListener("keydown", this.handleKeyDown);
+    document.removeEventListener("keypress", this.handleKeyDown);
+    document.removeEventListener("keypress", this.handleKeyPress);
     document.removeEventListener("keyup", this.reset);
+  }
+
+  // Is the user just trying to type a different character?
+  isOtherKey(typed) {
+    return !Object.keys(App.getMapping()).includes(typed.toLowerCase());
+  }
+
+  // keyPress event gives case-senstive mappings, but only keyDown
+  // tracks things like escape and enter.
+  handleKeyPress(e) {
+    // if any other key, close
+    const typed = String.fromCharCode(e.which);
+    if (this.isOtherKey(typed)) {
+      this.setState({ showPicker: false });
+      this.insertCharacter(typed, { insertBehind: false });
+    }
   }
 
   handleKeyDown(e) {
@@ -69,15 +88,16 @@ class App extends Component {
       return this.handleNumberKeys(e);
     }
     if (e.which === KEYBOARD_KEYS.enter) return this.handleEnter(e);
-    if (e.which === KEYBOARD_KEYS.esc) this.setState({ showPicker: false });
+    if (e.which === KEYBOARD_KEYS.esc)
+      return this.setState({ showPicker: false });
 
     const bIndex = this.state.buttonFocusIndex;
     const charLength = this.state.characters.length;
     if (e.which === KEYBOARD_KEYS.leftArrow && bIndex > 0) {
-      this.setState({ buttonFocusIndex: bIndex - 1 });
+      return this.setState({ buttonFocusIndex: bIndex - 1 });
     }
     if (e.which === KEYBOARD_KEYS.rightArrow && bIndex < charLength - 1) {
-      this.setState({ buttonFocusIndex: bIndex + 1 });
+      return this.setState({ buttonFocusIndex: bIndex + 1 });
     }
   }
 
@@ -95,11 +115,13 @@ class App extends Component {
     });
   }
 
-  insertCharacter(char) {
+  insertCharacter(char, opts) {
     const input = this.myInput.current;
     const cursorPosition = App.getCursorIndex(input);
+    debugger;
     let text = input.value.split("");
-    text[cursorPosition - 1] = char;
+    // Default to inserting behind the cursor
+    if (!opts) text[cursorPosition - 1] = char;
     input.value = text.join("");
     input.focus();
     input.setSelectionRange(cursorPosition, cursorPosition);
@@ -139,8 +161,6 @@ class App extends Component {
           const caseFunction =
             charCase === "lower" ? "toLowerCase" : "toUpperCase";
           const typedCharAsLower = typedChar.toLowerCase();
-          console.log(App.getMapping()[typedCharAsLower]);
-          console.log(typedCharAsLower);
           if (App.getMapping()[typedCharAsLower]) {
             const characters = App.getMapping()[typedCharAsLower].map(letter =>
               String.prototype[caseFunction].call(letter)
@@ -157,7 +177,7 @@ class App extends Component {
       }
       return;
     }
-    this.setState({ lastKeypress: e.which });
+    return this.setState({ lastKeypress: e.which });
   }
 
   render() {
@@ -166,10 +186,8 @@ class App extends Component {
         <Popover
           isOpen={this.state.showPicker}
           position={["top", "bottom"]}
-          align={"center"}
-          onClickOutside={() => this.setState({ showPicker: false })}
-          // contentLocation={{ top: 20, left: 20 }}
           padding={30} // actually height offset
+          onClickOutside={() => this.setState({ showPicker: false })}
           containerStyle={{
             boxShadow: "2px 2px 4px rgba(0,0,0,0.3)",
             border: "1px solid #e6f1f3",

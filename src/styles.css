@@ -25,7 +25,7 @@ ul.buttons li {
 
 ul.buttons button {
   border-radius: 4px;
-  border: none;
+  border: 1px solid #fff;
 }
 
 ul.buttons li span {
@@ -47,25 +47,34 @@ input {
 }
 
 .popoverArrow {
-  width: 40px;
-  height: 20px;
+  width: 31px;
+  height: 10px;
   overflow: hidden;
   position: absolute;
   left: 37%;
-  bottom: -20px;
+  bottom: -10px;
 }
 
 .popoverArrow:after {
   content: " ";
   display: block;
   border: 1px solid black;
-  height: 20px;
-  width: 20px;
+  height: 10px;
+  width: 10px;
   transform: rotate(45deg);
   position: absolute;
-  top: -11px;
-  left: 11px;
+  top: -6px;
+  left: 49%;
   box-shadow: rgba(0, 0, 0, 0.3) 2px 2px 4px;
   border: 1px solid rgb(230, 241, 243);
   background: #fff;
+}
+
+input {
+  height: 30px;
+  font-size: 18px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 3px;
+  width: 250px;
 }
