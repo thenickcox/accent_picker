@@ -12,7 +12,7 @@ const KEYBOARD_KEYS = {
   ALL_NUMBER_KEYS: [49, 50, 51, 52, 53, 54, 55, 56, 57]
 };
 
-class App extends Component {
+class InputWithAccentMap extends Component {
   static getCursorIndex(input) {
     return input.selectionStart || input.selectionStart === "0"
       ? input.selectionStart
@@ -68,7 +68,9 @@ class App extends Component {
 
   // Is the user just trying to type a different character?
   isOtherKey(typed) {
-    return !Object.keys(App.getMapping()).includes(typed.toLowerCase());
+    return !Object.keys(InputWithAccentMap.getMapping()).includes(
+      typed.toLowerCase()
+    );
   }
 
   // keyPress event gives case-senstive mappings, but only keyDown
@@ -117,7 +119,7 @@ class App extends Component {
 
   insertCharacter(char, opts) {
     const input = this.myInput.current;
-    const cursorPosition = App.getCursorIndex(input);
+    const cursorPosition = InputWithAccentMap.getCursorIndex(input);
     let text = input.value.split("");
     // Default to inserting behind the cursor
     if (!opts) text[cursorPosition - 1] = char;
@@ -154,16 +156,16 @@ class App extends Component {
       if (!this.timer) {
         this.timer = setTimeout(() => {
           const typedChar = target.value.split("")[
-            App.getCursorIndex(target) - 1
+            InputWithAccentMap.getCursorIndex(target) - 1
           ];
-          const charCase = App.getLetterCase(typedChar);
+          const charCase = InputWithAccentMap.getLetterCase(typedChar);
           const caseFunction =
             charCase === "lower" ? "toLowerCase" : "toUpperCase";
           const typedCharAsLower = typedChar.toLowerCase();
-          if (App.getMapping()[typedCharAsLower]) {
-            const characters = App.getMapping()[typedCharAsLower].map(letter =>
-              String.prototype[caseFunction].call(letter)
-            );
+          if (InputWithAccentMap.getMapping()[typedCharAsLower]) {
+            const characters = InputWithAccentMap.getMapping()[
+              typedCharAsLower
+            ].map(letter => String.prototype[caseFunction].call(letter));
             this.setState({
               showPicker: true,
               characters,
@@ -181,7 +183,7 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
+      <div className="container">
         <Popover
           isOpen={this.state.showPicker}
           position={["top", "bottom"]}
@@ -229,4 +231,4 @@ class App extends Component {
 }
 
 const rootElement = document.getElementById("root");
-ReactDOM.render(<App />, rootElement);
+ReactDOM.render(<InputWithAccentMap />, rootElement);
