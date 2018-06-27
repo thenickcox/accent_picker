@@ -118,7 +118,6 @@ class App extends Component {
   insertCharacter(char, opts) {
     const input = this.myInput.current;
     const cursorPosition = App.getCursorIndex(input);
-    debugger;
     let text = input.value.split("");
     // Default to inserting behind the cursor
     if (!opts) text[cursorPosition - 1] = char;
