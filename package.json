@@ -1,5 +1,5 @@
 {
-  "name": "new",
+  "name": "accent-picker",
   "version": "1.0.0",
   "description": "",
   "keywords": [],
@@ -8,7 +8,8 @@
     "react": "16.3.2",
     "react-dom": "16.3.2",
     "react-scripts": "1.1.4",
-    "react-tiny-popover": "3.4.2"
+    "react-tiny-popover": "3.4.2",
+    "ua-parser-js": "0.7.18"
   },
   "devDependencies": {},
   "scripts": {
